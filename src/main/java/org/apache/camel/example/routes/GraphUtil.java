@@ -5,6 +5,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
+import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 /**
@@ -20,19 +21,33 @@ public class GraphUtil {
 		Transaction tx = graphDb.beginTx();
 		try {
 			IndexManager index = graphDb.index();
-			Index<Node> waypointsIndex = index.forNodes("waypoints");
+			Index<Node> waypointsIndex = index.forNodes("waypoints", MapUtil.stringMap( IndexManager.PROVIDER, "lucene", "type", "fulltext" ) );
 			
 			Waypoint point1 = null;
 			Waypoint point2 = null;
 			
-			Node node1 = (Node) waypointsIndex.query(Waypoint.NAME,  way.getPoint1()).getSingle() ;
-			Node node2 = (Node) waypointsIndex.query(Waypoint.NAME,  way.getPoint2()).getSingle() ;
+			String point1Name = firstLetterUpperCase(way.getPoint1());
+			String point2Name = firstLetterUpperCase(way.getPoint2());
+			
+			Node node1 = null; //(Node) waypointsIndex.query(Waypoint.NAME, point1Name).getSingle() ;
+			Node node2 = null; //(Node) waypointsIndex.query(Waypoint.NAME, point2Name).getSingle() ;
+			
+			for (Node node : waypointsIndex.query(Waypoint.NAME, point1Name)) {
+				if(node.getProperty(Waypoint.NAME).toString().trim().toLowerCase().equalsIgnoreCase(point1Name)){
+					node1 = node;
+					break;
+				}
+			}
+			
+			for (Node node : waypointsIndex.query(Waypoint.NAME, point2Name)) {
+				if(node.getProperty(Waypoint.NAME).toString().trim().toLowerCase().equalsIgnoreCase(point2Name)){
+					node2 = node;
+					break;
+				}
+			}
 			
 			boolean point1IsNull = false;
 			boolean point2IsNull = false;
-			
-			String point1Name = firstLetterUpperCase(way.getPoint1());
-			String point2Name = firstLetterUpperCase(way.getPoint2());
 			
 			if(node1 == null ){
 				point1 = new Waypoint(graphDb.createNode(), point1Name);
