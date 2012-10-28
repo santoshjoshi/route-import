@@ -15,7 +15,7 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
  */
 public class GraphUtil {
 
-	private static GraphDatabaseService graphDb = new EmbeddedGraphDatabase("target/graph.db");
+	private static GraphDatabaseService graphDb = new EmbeddedGraphDatabase("/easy-routes/data/graph.db");
 	
 	public static void create(Way way) {
 		Transaction tx = graphDb.beginTx();
