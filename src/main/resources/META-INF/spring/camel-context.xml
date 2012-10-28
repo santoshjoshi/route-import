@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring-2.10.1.xsd">
+
+	<bean name="graphutil" id ="graphutil" class="org.apache.camel.example.routes.GraphUtil" />
+	
+	<camelContext trace="false"	xmlns="http://camel.apache.org/schema/spring">
+
+		<camel:route id="camel-routing-neo4j" autoStartup="true">
+			<camel:from uri="file:inbox/neo?noop=true&amp;delay=10" />
+			<camel:split streaming="true" >
+				<camel:tokenize token="\n"/>
+				<camel:unmarshal ref="bindyDataformat" >
+					<camel:bindy type="Csv"  classType="org.apache.camel.example.routes.Way"  />
+				</camel:unmarshal>
+				<camel:log message="${body}" loggingLevel="WARN" />
+				<camel:bean ref="graphutil" method="create" />
+			</camel:split>
+			<camel:log message="COMPLETED" loggingLevel="WARN" />
+		</camel:route>
+		
+	</camelContext>
+	
+</beans>
+
+
