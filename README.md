@@ -13,5 +13,9 @@ the CSV file has the file format format
 	ANDREWS GANJ,LAJ PAT NAGAR,2
 	LAJ PAT NAGAR,MAHARANI BAGH ,2
 
+
+	The above line will create a route between AIIMS and ANDREWS GANJ having a relationship ROAD with distance of 2 km between each other
+	An Index named waypoints will also be added to the nodes.
+	
 ##### How to Execute:
 	mvn camel:run	
