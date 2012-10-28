@@ -13,5 +13,5 @@ the CSV file has the file format format
 	ANDREWS GANJ,LAJ PAT NAGAR,2
 	LAJ PAT NAGAR,MAHARANI BAGH ,2
 
-##### Running:
-	camel:run	
+##### How to Execute:
+	mvn camel:run	
